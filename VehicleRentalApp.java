@@ -7,7 +7,8 @@ public class VehicleRentalApp {
         RentalSystem rentalSystem = RentalSystem.getInstance();
 
         while (true) {
-        	System.out.println("\n1: Add Vehicle\n2: Add Customer\n3: Rent Vehicle\n4: Return Vehicle\n5: Display Available Vehicles\n6: Show Rental History\n7: Exit");
+            System.out.println(
+                    "\n1: Add Vehicle\n2: Add Customer\n3: Rent Vehicle\n4: Return Vehicle\n5: Display Available Vehicles\n6: Show Rental History\n7: Exit");
             int choice = scanner.nextInt();
             scanner.nextLine();
 
@@ -36,21 +37,24 @@ public class VehicleRentalApp {
                         System.out.print("Has sidecar? (true/false): ");
                         boolean sidecar = scanner.nextBoolean();
                         vehicle = new Motorcycle(make, model, year, sidecar);
-		            } else if (type == 3) {
-		                System.out.print("Enter the cargo capacity: ");
-		                double cargoCapacity = scanner.nextDouble();
-		                vehicle = new Truck(make, model, year, cargoCapacity);
-		            } else {
-		            	vehicle = null;
-		            }
-                    
-                    if (vehicle != null){
-	                    vehicle.setLicensePlate(plate);
-	                    rentalSystem.addVehicle(vehicle);
-	                    System.out.println("Vehicle added.");
+                    } else if (type == 3) {
+                        System.out.print("Enter the cargo capacity: ");
+                        double cargoCapacity = scanner.nextDouble();
+                        vehicle = new Truck(make, model, year, cargoCapacity);
+                    } else {
+                        vehicle = null;
                     }
-                    else {
-	                    System.out.println("Vehicle not added.");
+
+                    if (vehicle != null) {
+                        vehicle.setLicensePlate(plate);
+                        rentalSystem.addVehicle(vehicle);
+                        if (rentalSystem.addVehicle(vehicle)) {
+                            System.out.println("Vehicle added.");
+                        } else {
+                            System.out.println("Vehicle not added due to duplicate license plate.");
+                        }
+                    } else {
+                        System.out.println("Vehicle not added.");
                     }
                     break;
 
@@ -61,18 +65,22 @@ public class VehicleRentalApp {
                     String cname = scanner.nextLine();
 
                     rentalSystem.addCustomer(new Customer(Integer.parseInt(cid), cname));
-                    System.out.println("Customer added.");
+                    if (rentalSystem.addCustomer(new Customer(Integer.parseInt(cid), cname))) {
+                        System.out.println("Customer added.");
+                    } else {
+                        System.out.println("Customer not added due to duplicate ID.");
+                    }
                     break;
-                    
+
                 case 3:
-                	System.out.println("List of Available Vehicles:");
-                	rentalSystem.displayVehicles(true);
+                    System.out.println("List of Available Vehicles:");
+                    rentalSystem.displayVehicles(true);
 
                     System.out.print("Enter license plate: ");
                     String rentPlate = scanner.nextLine().toUpperCase();
 
-                	System.out.println("Registered Customers:");
-                	rentalSystem.displayAllCustomers();
+                    System.out.println("Registered Customers:");
+                    rentalSystem.displayAllCustomers();
 
                     System.out.print("Enter customer ID: ");
                     String cidRent = scanner.nextLine();
@@ -93,14 +101,14 @@ public class VehicleRentalApp {
                     break;
 
                 case 4:
-                	System.out.println("List of Vehicles:");
-                	rentalSystem.displayVehicles(false);
+                    System.out.println("List of Vehicles:");
+                    rentalSystem.displayVehicles(false);
 
-                	System.out.print("Enter license plate: ");
+                    System.out.print("Enter license plate: ");
                     String returnPlate = scanner.nextLine().toUpperCase();
-                    
-                	System.out.println("Registered Customers:");
-                	rentalSystem.displayAllCustomers();
+
+                    System.out.println("Registered Customers:");
+                    rentalSystem.displayAllCustomers();
 
                     System.out.print("Enter customer ID: ");
                     String cidReturn = scanner.nextLine();
@@ -119,18 +127,18 @@ public class VehicleRentalApp {
 
                     rentalSystem.returnVehicle(vehicleToReturn, customerToReturn, LocalDate.now(), returnFees);
                     break;
-                    
+
                 case 5:
                     rentalSystem.displayVehicles(true);
                     break;
-                
+
                 case 6:
                     System.out.println("Rental History:");
                     rentalSystem.displayRentalHistory();
                     break;
-                    
+
                 case 0:
-                	scanner.close();
+                    scanner.close();
                     System.exit(0);
             }
         }
