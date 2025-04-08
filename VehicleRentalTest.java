@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.time.LocalDate;
 
 public class VehicleRentalTest {
@@ -39,7 +40,7 @@ public class VehicleRentalTest {
 
         assertThrows(IllegalArgumentException.class, () -> {
             Vehicle v7 = new Car("Kia", "Soul", 2022, 5);
-            v7.setLicensePlate("ZZZ99"); 
+            v7.setLicensePlate("ZZZ99");
         });
     }
 
@@ -75,4 +76,19 @@ public class VehicleRentalTest {
         boolean returnAgain = rentalSystem.returnVehicle(vehicle, customer, LocalDate.now(), 0.0);
         assertFalse(returnAgain, "Returning again should fail");
     }
+
+    @Test
+    public void testSingletonRentalSystem() throws Exception {
+        // Use reflection to access the constructor
+        Constructor<RentalSystem> constructor = RentalSystem.class.getDeclaredConstructor();
+
+        // Check that the constructor is private
+        int modifiers = constructor.getModifiers();
+        assertTrue(Modifier.isPrivate(modifiers), "Constructor should be private");
+
+        // Try getting an instance through getInstance()
+        RentalSystem instance = RentalSystem.getInstance();
+        assertNotNull(instance, "Singleton instance should not be null");
+    }
+
 }
