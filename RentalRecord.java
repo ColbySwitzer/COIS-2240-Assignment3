@@ -22,6 +22,18 @@ public class RentalRecord {
     public Vehicle getVehicle(){
     	return vehicle;
     }
+
+    public LocalDate getRecordDate(){
+        return recordDate;
+    }
+
+    public double getTotalAmount(){
+        return totalAmount;
+    }
+
+    public String getRecordType(){
+        return recordType;
+    }
     
     @Override
     public String toString() {
