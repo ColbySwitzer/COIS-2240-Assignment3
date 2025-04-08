@@ -25,6 +25,9 @@ public abstract class Vehicle {
     }
 
     public void setLicensePlate(String plate) {
+        if (!isValidPlate(plate)){
+            throw new IllegalArgumentException("Invalid license plate format. Must be 3 letters followed by 3 numbers.");
+        }
         this.licensePlate = plate == null ? null : plate.toUpperCase();
     }
 
@@ -44,6 +47,11 @@ public abstract class Vehicle {
 
     public String getInfo() {
         return "| " + licensePlate + " | " + make + " | " + model + " | " + year + " | " + status + " |";
+    }
+
+    private boolean isValidPlate(String plate){
+        if (plate == null || plate.isEmpty()) return false;
+        return plate.matches("[A-Z]{3}\\d{3}");
     }
 
 }
