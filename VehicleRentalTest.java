@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
+
 public class VehicleRentalTest {
 
     @Test
@@ -39,5 +41,38 @@ public class VehicleRentalTest {
             Vehicle v7 = new Car("Kia", "Soul", 2022, 5);
             v7.setLicensePlate("ZZZ99"); 
         });
+    }
+
+    @Test
+    public void testRentAndReturnVehicle() {
+        // Arrange
+        RentalSystem rentalSystem = RentalSystem.getInstance();
+        Vehicle vehicle = new Car("Toyota", "Camry", 2021, 5);
+        vehicle.setLicensePlate("TST123");
+        Customer customer = new Customer(1234, "Jane Doe");
+
+        rentalSystem.addCustomer(customer);
+        rentalSystem.addVehicle(vehicle);
+
+        // Assert vehicle is initially available
+        assertEquals(Vehicle.VehicleStatus.AVAILABLE, vehicle.getStatus());
+
+        // Act & Assert: Rent the vehicle
+        boolean rentSuccess = rentalSystem.rentVehicle(vehicle, customer, LocalDate.now(), 150.0);
+        assertTrue(rentSuccess, "Renting should succeed");
+        assertEquals(Vehicle.VehicleStatus.RENTED, vehicle.getStatus());
+
+        // Try to rent again (should fail)
+        boolean rentAgain = rentalSystem.rentVehicle(vehicle, customer, LocalDate.now(), 150.0);
+        assertFalse(rentAgain, "Renting again should fail");
+
+        // Act & Assert: Return the vehicle
+        boolean returnSuccess = rentalSystem.returnVehicle(vehicle, customer, LocalDate.now(), 0.0);
+        assertTrue(returnSuccess, "Returning should succeed");
+        assertEquals(Vehicle.VehicleStatus.AVAILABLE, vehicle.getStatus());
+
+        // Try to return again (should fail)
+        boolean returnAgain = rentalSystem.returnVehicle(vehicle, customer, LocalDate.now(), 0.0);
+        assertFalse(returnAgain, "Returning again should fail");
     }
 }
