@@ -28,6 +28,7 @@ public class RentalSystem {
 
     public void addCustomer(Customer customer) {
         customers.add(customer);
+        saveCustomer(customer);
     }
 
     public void rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) {
@@ -127,6 +128,15 @@ public class RentalSystem {
 
         } catch (IOException e) {
             System.out.println("Error saving vehicle: " + e.getMessage());
+        }
+    }
+
+    private void saveCustomer(Customer customer) {
+        try (FileWriter writer = new FileWriter("customers.txt", true)){
+            String line = customer.getCustomerId() + "," + customer.getCustomerName();
+            writer.write(line+"\n");
+        } catch (IOException e){
+            System.out.println("Error saving customer: " + e.getMessage());
         }
     }
 }
